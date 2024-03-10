@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
+    public event EventHandler OnInteractAction;
+
     private PlayerInput playerInput;
     private PlayerInput.PlayerActions playerActions;
 
@@ -13,6 +16,12 @@ public class InputManager : MonoBehaviour
         playerInput = new();
         playerActions = playerInput.Player;
         playerActions.Enable();
+        playerActions.Interact.performed += Interact_performed;
+    }
+
+    private void Interact_performed(InputAction.CallbackContext obj)
+    {
+        OnInteractAction?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
