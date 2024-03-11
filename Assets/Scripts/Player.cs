@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
 
     private void Interact()
     {
-        float distance = 2f;
+        float distance = 1.5f;
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, distance, counterLayerMask))
         {
             if (hitInfo.transform.TryGetComponent(out ClearCounter clearCounter))

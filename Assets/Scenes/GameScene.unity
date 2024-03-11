@@ -131,6 +131,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6204535654560500680, guid: 03f2d525b0caf8a47b053eab2b1a1b06,
+        type: 3}
+      propertyPath: kitchenObjectSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 934a017f9c6aafc4fb8310f265db767c,
+        type: 2}
     - target: {fileID: 6397770178742712280, guid: 03f2d525b0caf8a47b053eab2b1a1b06,
         type: 3}
       propertyPath: clearCounter
@@ -1074,6 +1080,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6204535654560500680, guid: 03f2d525b0caf8a47b053eab2b1a1b06,
+        type: 3}
+      propertyPath: kitchenObjectSO
+      value: 
+      objectReference: {fileID: 11400000, guid: bc9de241b76bf6a46b2d554d59555499,
+        type: 2}
     - target: {fileID: 6862159802879491418, guid: 03f2d525b0caf8a47b053eab2b1a1b06,
         type: 3}
       propertyPath: m_Name
