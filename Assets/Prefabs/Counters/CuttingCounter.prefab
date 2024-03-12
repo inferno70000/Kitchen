@@ -172,6 +172,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79380451ea4ac924d9fbfd7a337bf6c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cuttingRecipeSOArray:
+  - {fileID: 11400000, guid: 5d0926f8926a4814c904bb8dddf99670, type: 2}
+  - {fileID: 11400000, guid: e041100fe4f999843a2db9a7580eba97, type: 2}
+  - {fileID: 11400000, guid: d9a5ad1b31e56004287b2cfc7bb28624, type: 2}
 --- !u!4 &7491670110391498362 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8987702659832457187, guid: 800fab5403a40e7409d90dc84a2e7cc8,
