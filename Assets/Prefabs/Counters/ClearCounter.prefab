@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3707787626596171447}
   m_Layer: 6
-  m_Name: TopPoint
+  m_Name: KitchenObjectTopPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,9 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcf124f1a0ba0e0489c77496949f18df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tomatoPrefabs: {fileID: 2588782464609741801, guid: 97bca6a1ce363c545aeb9ec8d7bb7fc3,
-    type: 3}
-  counterTopPoint: {fileID: 3707787626596171447}
+  kitchenObjectTopPoint: {fileID: 0}
+  kitchenObjectSO: {fileID: 0}
+  secondClearCounter: {fileID: 0}
+  isTesting: 0
 --- !u!1001 &741772754035197091
 PrefabInstance:
   m_ObjectHideFlags: 0

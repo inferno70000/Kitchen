@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IKitchenObjectParent
 {
     public static Player Instance { get; private set; }
 
@@ -14,12 +14,17 @@ public class Player : MonoBehaviour
     }
 
     private const string COUNTER_LAYERMASK = "Interactable";
+    private const string KITCHEN_OBJECT_HOLD_POINT = "KitchenObjectHoldPoint";
 
     [SerializeField] private InputManager inputManager;
     [SerializeField] private float speed = 5f;
     private bool isWalking;
     private LayerMask counterLayerMask;
     private ClearCounter selectedCounter;
+
+    private KitchenObject kitchenObject;
+    private Transform kitchenObjectHoldPoint;
+
 
     private void Awake()
     {
@@ -34,6 +39,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         counterLayerMask = LayerMask.GetMask(COUNTER_LAYERMASK);
+        kitchenObjectHoldPoint = transform.Find(KITCHEN_OBJECT_HOLD_POINT);
         inputManager.OnInteractAction += InputManager_OnInteractAction;
     }
 
@@ -41,7 +47,7 @@ public class Player : MonoBehaviour
     {
         if (selectedCounter != null)
         {
-            selectedCounter.Interact();
+            selectedCounter.Interact(this);
         }
     }
 
@@ -105,5 +111,30 @@ public class Player : MonoBehaviour
         {
             selectedCouter = selectedCounter
         });
+    }
+
+    public void ClearKitchenObject()
+    {
+        kitchenObject = null;
+    }
+
+    public KitchenObject GetKitchenObject()
+    {
+        return kitchenObject;
+    }
+
+    public void SetKitchenObject(KitchenObject kitchenObject)
+    {
+        this.kitchenObject = kitchenObject;
+    }
+
+    public Transform GetFollowingObjectTopPoint()
+    {
+        return kitchenObjectHoldPoint;
+    }
+
+    public bool HasKitchenObject()
+    {
+        return kitchenObject != null;
     }
 }
