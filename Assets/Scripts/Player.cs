@@ -86,7 +86,10 @@ public class Player : MonoBehaviour
 
         //rotate player to forward movement
         float rotationSpeed = 10f;
-        transform.forward = Vector3.Slerp(transform.forward, dir, Time.deltaTime * rotationSpeed);
+        if (dir != Vector3.zero)
+        {
+            transform.forward = Vector3.Slerp(transform.forward, dir, Time.deltaTime * rotationSpeed);
+        }
     }
 
     public bool IsWalking()
