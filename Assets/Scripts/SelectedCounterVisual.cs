@@ -4,13 +4,25 @@ using UnityEngine;
 
 public class SelectedCounterVisual : MonoBehaviour
 {
-    [SerializeField] private ClearCounter clearCounter;
-    [SerializeField] private GameObject counterVisual;
+    [SerializeField] private BaseCounter baseCounter;
+    [SerializeField] private List<GameObject> selectedCounterVisualArray = new();
+
+    private void Reset()
+    {
+        foreach (Transform item in transform)
+        {
+            selectedCounterVisualArray.Add(item.gameObject);
+        }
+        baseCounter = transform.parent.gameObject.GetComponent<BaseCounter>();
+    }
 
     private void Awake()
     {
-        counterVisual = transform.GetChild(0).gameObject;
-        clearCounter = transform.parent.gameObject.GetComponent<ClearCounter>();
+        foreach (Transform item in transform)
+        {
+            selectedCounterVisualArray.Add(item.gameObject);
+        }
+        baseCounter = transform.parent.gameObject.GetComponent<BaseCounter>();
     }
 
     private void Start()
@@ -20,7 +32,7 @@ public class SelectedCounterVisual : MonoBehaviour
 
     private void Player_OnSelectedCounterChanged(object sender, Player.OnSelectedCounterChangedEventArg e)
     {
-        if (e.selectedCouter == clearCounter)
+        if (e.selectedCouter == baseCounter)
         {
             Show();
         }
@@ -32,11 +44,17 @@ public class SelectedCounterVisual : MonoBehaviour
 
     private void Show()
     {
-        counterVisual.SetActive(true);
+        foreach (GameObject item in selectedCounterVisualArray)
+        {
+            item.SetActive(true);
+        }
     }
 
     private void Hide()
     {
-        counterVisual.SetActive(false);
+        foreach (GameObject item in selectedCounterVisualArray)
+        {
+            item.SetActive(false);
+        }
     }
 }

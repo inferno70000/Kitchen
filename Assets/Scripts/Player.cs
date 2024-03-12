@@ -10,7 +10,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public event EventHandler<OnSelectedCounterChangedEventArg> OnSelectedCounterChanged;
     public class OnSelectedCounterChangedEventArg
     {
-        public ClearCounter selectedCouter;
+        public BaseCounter selectedCouter;
     }
 
     private const string COUNTER_LAYERMASK = "Interactable";
@@ -20,7 +20,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     [SerializeField] private float speed = 5f;
     private bool isWalking;
     private LayerMask counterLayerMask;
-    private ClearCounter selectedCounter;
+    private BaseCounter selectedCounter;
 
     private KitchenObject kitchenObject;
     private Transform kitchenObjectHoldPoint;
@@ -43,7 +43,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         inputManager.OnInteractAction += InputManager_OnInteractAction;
     }
 
-    private void InputManager_OnInteractAction(object sender, System.EventArgs e)
+    private void InputManager_OnInteractAction(object sender, EventArgs e)
     {
         if (selectedCounter != null)
         {
@@ -62,9 +62,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         float distance = 1.5f;
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, distance, counterLayerMask))
         {
-            if (hitInfo.transform.TryGetComponent(out ClearCounter clearCounter))
+            if (hitInfo.transform.TryGetComponent(out BaseCounter baseCounter))
             {
-                SetSelectedCounter(clearCounter);
+                SetSelectedCounter(baseCounter);
             }
             else
             {
@@ -103,7 +103,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         return isWalking;
     }
 
-    private void SetSelectedCounter(ClearCounter selectedCounter)
+    private void SetSelectedCounter(BaseCounter selectedCounter)
     {
         this.selectedCounter = selectedCounter;
 
