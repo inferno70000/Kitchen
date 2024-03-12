@@ -15,6 +15,10 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
         kitchenObjectTopPoint = transform.Find(KITCHEN_OBJECT_TOP_POINT);
     }
 
+    /// <summary>
+    /// Define interaction of the counter
+    /// </summary>
+    /// <param name="player">Instance of player</param>
     public virtual void Interact(Player player)
     {
 

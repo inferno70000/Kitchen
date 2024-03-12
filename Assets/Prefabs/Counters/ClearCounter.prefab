@@ -136,8 +136,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 455e1c72f1482f148a9da13b7e1be6d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearCounter: {fileID: 0}
-  counterVisual: {fileID: 0}
+  baseCounter: {fileID: 3455666518525116471}
+  selectedCounterVisualArray:
+  - {fileID: 5765092030831137820}
+--- !u!1 &5765092030831137820 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8489276541531669327, guid: 0004cb1e11ad014419b943c7da960724,
+    type: 3}
+  m_PrefabInstance: {fileID: 2724185885127825235}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7250483928953301269
 PrefabInstance:
   m_ObjectHideFlags: 0

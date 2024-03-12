@@ -98,6 +98,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         }
     }
 
+    /// <summary>
+    /// Get status player is walking or not
+    /// </summary>
+    /// <returns>boolean</returns>
     public bool IsWalking()
     {
         return isWalking;
