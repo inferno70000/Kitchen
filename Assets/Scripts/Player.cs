@@ -41,6 +41,15 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         counterLayerMask = LayerMask.GetMask(COUNTER_LAYERMASK);
         kitchenObjectHoldPoint = transform.Find(KITCHEN_OBJECT_HOLD_POINT);
         inputManager.OnInteractAction += InputManager_OnInteractAction;
+        inputManager.OnInteractAlternativeAction += InputManager_OnInteractAlternativeAction;
+    }
+
+    private void InputManager_OnInteractAlternativeAction(object sender, EventArgs e)
+    {
+        if (selectedCounter != null)
+        {
+            selectedCounter.InteractAlternative(this);
+        }
     }
 
     private void InputManager_OnInteractAction(object sender, EventArgs e)

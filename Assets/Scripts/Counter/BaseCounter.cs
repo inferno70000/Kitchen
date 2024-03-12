@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 {
-    public KitchenObjectSO kitchenObjectSO;
-
     private const string KITCHEN_OBJECT_TOP_POINT = "KitchenObjectTopPoint";
 
     private KitchenObject kitchenObject;
@@ -21,8 +19,18 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
     /// <param name="player">Instance of player</param>
     public virtual void Interact(Player player)
     {
-
+        Debug.LogError("BaseCounter.Interact()");
     }
+    
+    // <summary>
+    /// Define interaction of the counter
+    /// </summary>
+    /// <param name="player">Instance of player</param>
+    public virtual void InteractAlternative(Player player)
+    {
+        Debug.LogError("BaseCounter.InteractAlternative()");
+    }
+
     public void ClearKitchenObject()
     {
         kitchenObject = null;
