@@ -59,7 +59,6 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
 
     public override void InteractAlternative(Player player)
     {
-
         //Counter has a kitchen object and a recipe for it
         if (HasKitchenObject() && HasRecipeForInput(GetKitchenObject().GetKitchenScriptableSO()))
         {
