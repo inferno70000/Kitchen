@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class ProgressBarUI : MonoBehaviour
 {
-    private CuttingCounter cuttingCounter;
+    private IHasProgressBar iHasProgressBar;
     private Image bar;
 
     private void Start()
     {
-        cuttingCounter = transform.root.GetComponent<CuttingCounter>();
+        iHasProgressBar = transform.root.GetComponent<IHasProgressBar>();
         bar = transform.GetChild(1).GetComponent<Image>();
-        cuttingCounter.OnCuttingProgress += CuttingCounter_OnCuttingProgress;
+        iHasProgressBar.OnProgressChanged += IHasProgressBar_OnProgressChangedEventAgr;
 
         Hide();
     }
 
-    private void CuttingCounter_OnCuttingProgress(object sender, CuttingCounter.OnCuttingProgressEventAgr e)
+    private void IHasProgressBar_OnProgressChangedEventAgr(object sender, IHasProgressBar.OnProgressChangedEventAgr e)
     {
         bar.fillAmount = e.progressNomalized;
 

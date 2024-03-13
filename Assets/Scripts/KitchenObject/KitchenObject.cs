@@ -48,6 +48,9 @@ public class KitchenObject : MonoBehaviour
         transform.localPosition = Vector3.zero;
     }
 
+    /// <summary>
+    /// Destroy this kitchen object
+    /// </summary>
     public void DestroySelf()
     {
         kitchenObjectParent.ClearKitchenObject();
@@ -55,6 +58,12 @@ public class KitchenObject : MonoBehaviour
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Spawn a new kitchen object
+    /// </summary>
+    /// <param name="kitchenObjectSO">Kitchen object needs to spawn</param>
+    /// <param name="kitchenObjectParent">Parent of the new kitchen object</param>
+    /// <returns>KitchenObject</returns>
     public static KitchenObject Spawn(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
     {
         Transform kitchenTransform = Instantiate(kitchenObjectSO.prefab);
