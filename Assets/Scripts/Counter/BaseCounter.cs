@@ -22,8 +22,8 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
         Debug.LogError("BaseCounter.Interact()");
     }
     
-    // <summary>
-    /// Define interaction of the counter
+    /// <summary>
+    /// Define interaction aternate of the counter
     /// </summary>
     /// <param name="player">Instance of player</param>
     public virtual void InteractAlternative(Player player)
