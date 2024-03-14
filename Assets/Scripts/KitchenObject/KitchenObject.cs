@@ -72,4 +72,21 @@ public class KitchenObject : MonoBehaviour
 
         return kitchenObject;
     }
+
+    /// <summary>
+    /// Try getting plateKitchenObject. if existed, return out plateKitchenObject
+    /// </summary>
+    /// <param name="plateKitchenObject">asign plateKitchenObject to this param</param>
+    /// <returns>bool</returns>
+    public bool TryGetPlateKitchenObject(out PlateKitchenObject plateKitchenObject)
+    {
+        if (this is PlateKitchenObject)
+        {
+            plateKitchenObject = this as PlateKitchenObject;
+            return true;
+        }
+
+        plateKitchenObject = null;
+        return false;
+    }
 }
