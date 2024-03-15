@@ -210,6 +210,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7491670110391498362}
     m_Modifications:
+    - target: {fileID: 1372933679946158445, guid: 4756ab13a7112c049bec34c291560260,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661290729580283922, guid: 4756ab13a7112c049bec34c291560260,
+        type: 3}
+      propertyPath: CuttingCounter
+      value: 
+      objectReference: {fileID: 4933183550594149571}
+    - target: {fileID: 2661290729580283922, guid: 4756ab13a7112c049bec34c291560260,
+        type: 3}
+      propertyPath: ObjectHasProgressBar
+      value: 
+      objectReference: {fileID: 4933183550594149571}
     - target: {fileID: 6747544023118358396, guid: 4756ab13a7112c049bec34c291560260,
         type: 3}
       propertyPath: m_Name

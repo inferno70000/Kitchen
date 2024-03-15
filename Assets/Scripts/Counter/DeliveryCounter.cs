@@ -10,8 +10,10 @@ public class DeliveryCounter : BaseCounter
         if (player.HasKitchenObject())
         {
             //Player is holding a plate
-            if (player.GetKitchenObject().TryGetPlateKitchenObject(out var kitchenObject))
+            if (player.GetKitchenObject().TryGetPlateKitchenObject(out var plateKitchenObject))
             {
+                DeliveryManager.Instance.Delivery(plateKitchenObject);
+
                 player.GetKitchenObject().DestroySelf();
             }
         }

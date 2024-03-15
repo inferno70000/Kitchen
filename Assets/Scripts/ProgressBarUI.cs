@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class ProgressBarUI : MonoBehaviour
 {
+    [SerializeField] private GameObject ObjectHasProgressBar;
     private IHasProgressBar iHasProgressBar;
     private Image bar;
 
     private void Start()
     {
-        iHasProgressBar = transform.root.GetComponent<IHasProgressBar>();
+        iHasProgressBar = ObjectHasProgressBar.GetComponent<IHasProgressBar>();   
         bar = transform.GetChild(1).GetComponent<Image>();
         iHasProgressBar.OnProgressChanged += IHasProgressBar_OnProgressChangedEventAgr;
 

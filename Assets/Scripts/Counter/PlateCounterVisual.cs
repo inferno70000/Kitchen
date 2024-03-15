@@ -12,7 +12,6 @@ public class PlateCounterVisual : MonoBehaviour
 
     private void Start()
     {
-        plateCounter = transform.root.GetComponent<PlateCounter>();
         plateCounter.OnPlateAdded += PlateCounter_OnPlateAdded;
         plateCounter.OnPlateRemoved += PlateCounter_OnPlateRemoved;
     }

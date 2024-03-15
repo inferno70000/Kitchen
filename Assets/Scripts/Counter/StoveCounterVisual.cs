@@ -10,7 +10,6 @@ public class StoveCounterVisual : MonoBehaviour
 
     private void Start()
     {
-        stoveCounter = transform.root.GetComponent<StoveCounter>();
         stoveCounter.OnStateChanged += StoveCounter_OnStateChanged;
     }
 
