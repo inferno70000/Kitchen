@@ -1,9 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlateKitchenObject : KitchenObject
 {
+    public event EventHandler<OnIngredientAddedEventArgs> OnIngredientAdded;
+    public class OnIngredientAddedEventArgs
+    {
+        public KitchenObjectSO KitchenObjectSO;
+    }
+
     [SerializeField] private List<KitchenObjectSO> validKitchenObjectSOList;
     private List<KitchenObjectSO> kitchenObjectSOList;
 
@@ -19,10 +26,14 @@ public class PlateKitchenObject : KitchenObject
     /// <returns>boolean</returns>
     public bool TryAddingKitchenObject(KitchenObjectSO kitchenObjectSO)
     {
-        //kitchenObject is valid and does not have in list
+        //kitchenObject is valid and does not have in added list
         if (validKitchenObjectSOList.Contains(kitchenObjectSO) && !kitchenObjectSOList.Contains(kitchenObjectSO))
         {
             kitchenObjectSOList.Add(kitchenObjectSO);
+            OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs
+            {
+                KitchenObjectSO = kitchenObjectSO,
+            });
             return true;
         }
 
