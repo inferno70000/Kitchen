@@ -20,7 +20,8 @@ public class GameManager : MonoBehaviour
     private State state;
     private float waitingToStartTime = 1f;
     private float countdownToStartTime = 3f;
-    private float gamePlayingTime = 5f;
+    private float gamePlayingTime;
+    private float gamePlayingTimeMax = 20f;
 
     private void Awake()
     {
@@ -52,6 +53,7 @@ public class GameManager : MonoBehaviour
                 {
                     state = State.GamePlaying;
                     OnStateChanged?.Invoke(this, EventArgs.Empty);
+                    gamePlayingTime = gamePlayingTimeMax;
                 }
                 Debug.Log("Countdown to start.");
                 break;
@@ -85,5 +87,15 @@ public class GameManager : MonoBehaviour
     public bool IsCountdownState()
     {
         return state == State.CountdownToStart;
+    }
+
+    public bool IsGameOverState()
+    {
+        return state == State.GameOver;
+    }
+
+    public float GetGamePlayingTimeNomalized()
+    {
+        return 1 - (gamePlayingTime / gamePlayingTimeMax);
     }
 }
