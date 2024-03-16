@@ -7,6 +7,9 @@ public class DeliveryManager : MonoBehaviour
 {
     public static DeliveryManager Instance { get; private set; }
 
+    public event EventHandler OnDeliverySuccess;
+    public event EventHandler OnDeliveryFail;
+
     public event EventHandler OnDeliverySpawned;
     public event EventHandler OnDeliveryRemoved;
 
@@ -60,11 +63,11 @@ public class DeliveryManager : MonoBehaviour
             bool matchRecipe = true;
             RecipeSO waitingRecipeSO = waitingRecipeSOList[i];
             //Cycling through all plateKitchenObjectSO
-            foreach (KitchenObjectSO plateKitchenObjectSO in plateKitchenObject.GetKitchenObjectSOList())
+            foreach (KitchenObjectSO recipeKitchenObjectSO in waitingRecipeSO.kitchenObjectSOList)
             {
                 bool matchIngredient = false;
                 //Cycling through all recipeKitchenObjectSO
-                foreach (KitchenObjectSO recipeKitchenObjectSO in waitingRecipeSO.kitchenObjectSOList)
+                foreach (KitchenObjectSO plateKitchenObjectSO in plateKitchenObject.GetKitchenObjectSOList())
                 {
                     if (plateKitchenObjectSO == recipeKitchenObjectSO)
                     {
@@ -83,9 +86,12 @@ public class DeliveryManager : MonoBehaviour
             {
                 waitingRecipeSOList.RemoveAt(i);
                 OnDeliveryRemoved?.Invoke(this, EventArgs.Empty);   
+                OnDeliverySuccess?.Invoke(this, EventArgs.Empty);
                 return;
             }
         }
+        //player delivery wrong recipe.
+        OnDeliveryFail?.Invoke(this, EventArgs.Empty);  
     }
 
     /// <summary>

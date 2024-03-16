@@ -7,6 +7,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 {
     public static Player Instance { get; private set; }
 
+    public event EventHandler OnPickupSomething;
+
     public event EventHandler<OnSelectedCounterChangedEventArg> OnSelectedCounterChanged;
     public class OnSelectedCounterChangedEventArg
     {
@@ -139,6 +141,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;
+
+        OnPickupSomething?.Invoke(this, EventArgs.Empty);
     }
 
     public Transform GetFollowingObjectTopPoint()

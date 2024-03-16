@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class CuttingCounter : BaseCounter, IHasProgressBar
 {
-    public event EventHandler<IHasProgressBar.OnProgressChangedEventAgr> OnProgressChanged;
+    public static event EventHandler OnAnyCut;
 
+    public event EventHandler<IHasProgressBar.OnProgressChangedEventAgr> OnProgressChanged;
     public event EventHandler OnCut;
 
     [SerializeField] private List<CuttingRecipeSO> cuttingRecipeSOArray;
@@ -91,6 +92,8 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
             });
 
             OnCut?.Invoke(this, EventArgs.Empty);
+
+            OnAnyCut?.Invoke(this, EventArgs.Empty);
 
             //Cutting progress is done
             if (CuttingProgress == GetCuttingRecipeSOFromInput(kitchenObjectSO).CuttingProgressMax)
