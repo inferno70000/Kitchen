@@ -33,20 +33,21 @@ public class DeliveryManager : MonoBehaviour
 
     private void Update()
     {
-        if (spawnRecipeTimer >= 0f)
+
+        if (GameManager.Instance.IsGamePlaying())
         {
             spawnRecipeTimer += Time.deltaTime;
-        }
 
-        if (spawnRecipeTimer > spawnRecipeTimeMax)
-        {
-            spawnRecipeTimer = 0f;
-
-            if (waitingRecipeSOList.Count < spawnRecipeCountMax)
+            if (spawnRecipeTimer > spawnRecipeTimeMax)
             {
-                RecipeSO waitingRecipeSO = listRecipeSO.recipeSOList[UnityEngine.Random.Range(0, listRecipeSO.recipeSOList.Count)];
-                waitingRecipeSOList.Add(waitingRecipeSO);
-                OnDeliverySpawned?.Invoke(this, EventArgs.Empty);   
+                spawnRecipeTimer = 0f;
+
+                if (waitingRecipeSOList.Count < spawnRecipeCountMax)
+                {
+                    RecipeSO waitingRecipeSO = listRecipeSO.recipeSOList[UnityEngine.Random.Range(0, listRecipeSO.recipeSOList.Count)];
+                    waitingRecipeSOList.Add(waitingRecipeSO);
+                    OnDeliverySpawned?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
     }
@@ -85,13 +86,13 @@ public class DeliveryManager : MonoBehaviour
             if (matchRecipe == true)
             {
                 waitingRecipeSOList.RemoveAt(i);
-                OnDeliveryRemoved?.Invoke(this, EventArgs.Empty);   
+                OnDeliveryRemoved?.Invoke(this, EventArgs.Empty);
                 OnDeliverySuccess?.Invoke(this, EventArgs.Empty);
                 return;
             }
         }
         //player delivery wrong recipe.
-        OnDeliveryFail?.Invoke(this, EventArgs.Empty);  
+        OnDeliveryFail?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
