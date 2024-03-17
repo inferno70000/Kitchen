@@ -19,6 +19,21 @@ public class InputManager : MonoBehaviour
         playerActions.Enable();
         playerActions.Interact.performed += Interact_performed;
         playerActions.InteractAlternative.performed += InteractAlternative_performed;
+        playerActions.Pause.performed += Pause_performed;
+    }
+
+    private void OnDestroy()
+    {
+        playerActions.Interact.performed -= Interact_performed;
+        playerActions.Pause.performed -= Pause_performed;
+        playerActions.InteractAlternative.performed -= InteractAlternative_performed;
+        
+        playerInput.Dispose();
+    }
+
+    private void Pause_performed(InputAction.CallbackContext obj)
+    {
+        GameManager.Instance.TogglePause();
     }
 
     private void InteractAlternative_performed(InputAction.CallbackContext obj)

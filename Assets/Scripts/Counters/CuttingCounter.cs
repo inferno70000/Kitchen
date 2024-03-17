@@ -13,6 +13,11 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
     [SerializeField] private List<CuttingRecipeSO> cuttingRecipeSOArray;
     private int CuttingProgress;
 
+    public static new void ResetStaticData()
+    {
+        OnAnyCut = null;
+    }
+
     public override void Interact(Player player)
     {
         //There is kitchen object on the counter

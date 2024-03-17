@@ -11,6 +11,12 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent
 
     private KitchenObject kitchenObject;
     private Transform kitchenObjectTopPoint;
+
+    public static void ResetStaticData()
+    {
+        OnGetKitchenObject = null;
+    }
+
     private void Start()
     {
         kitchenObjectTopPoint = transform.Find(KITCHEN_OBJECT_TOP_POINT);

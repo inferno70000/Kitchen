@@ -12,7 +12,7 @@ public class LoadCallBack : MonoBehaviour
         {
             isFirstUpdate = false;
 
-            Loader.Load(Loader.Scene.GameScene);
+            Loader.LoadCallBack();
         }
     }
 }

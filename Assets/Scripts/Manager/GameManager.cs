@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public event EventHandler OnStateChanged;
+    public event EventHandler OnGamePause;
+    public event EventHandler OnGameUnPause;
 
     public enum State
     {
@@ -22,6 +24,7 @@ public class GameManager : MonoBehaviour
     private float countdownToStartTime = 3f;
     private float gamePlayingTime;
     private float gamePlayingTimeMax = 20f;
+    private bool isGamePause;
 
     private void Awake()
     {
@@ -48,7 +51,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Waiting to start.");
                 break;
             case State.CountdownToStart:
-                countdownToStartTime -= Time.deltaTime; 
+                countdownToStartTime -= Time.deltaTime;
                 if (countdownToStartTime < 0f)
                 {
                     state = State.GamePlaying;
@@ -97,5 +100,22 @@ public class GameManager : MonoBehaviour
     public float GetGamePlayingTimeNomalized()
     {
         return 1 - (gamePlayingTime / gamePlayingTimeMax);
+    }
+
+    public void TogglePause()
+    {
+        isGamePause = !isGamePause;
+
+        if (isGamePause)
+        {
+            OnGamePause?.Invoke(this, EventArgs.Empty);
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            OnGameUnPause?.Invoke(this, EventArgs.Empty);
+            Time.timeScale = 1f;
+        }
+
     }
 }
