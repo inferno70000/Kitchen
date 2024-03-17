@@ -11,14 +11,4 @@ public class GamePlayingClockUI : MonoBehaviour
     {
         gamePlayingClock.fillAmount = GameManager.Instance.GetGamePlayingTimeNomalized();
     }
-
-    private void Show()
-    {
-        gameObject.SetActive(true);
-    }
-
-    private void Hide()
-    {
-        gameObject.SetActive(false);
-    }
 }
