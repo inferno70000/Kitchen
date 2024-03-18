@@ -4,18 +4,27 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager Instance;
+    public static SoundManager Instance { get; private set; }
+
+    private const string PLAYER_PREFS_SOUND_EFFECT_VOLUME = "SoundEffectVolume";
 
     [SerializeField] private SoundListsSO soundListsSO;
+    private float volume = 1f;
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Debug.LogError("There is more than one SoundManager instance.");
+        }
+
         if (Instance != null)
         {
             Debug.Log("There is more than one SoundManager instance.");
         }
 
         Instance = this;
+        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_SOUND_EFFECT_VOLUME, volume);
     }
 
     private void Start()
@@ -62,19 +71,44 @@ public class SoundManager : MonoBehaviour
         PlayAudio(soundListsSO.delivery_success, DeliveryManager.Instance.transform.position);
     }
 
-    private void PlayAudio(AudioClip[] clip, Vector3 position, float volume = 1f)
+    private void PlayAudio(AudioClip[] clip, Vector3 position, float volumeMultiplier = 1f)
     {
         AudioClip audioClip = clip[Random.Range(0, clip.Length)];
-        AudioSource.PlayClipAtPoint(audioClip, position, volume);
+        AudioSource.PlayClipAtPoint(audioClip, position, volumeMultiplier * volume);
     }
 
-    private void PlayAudio(AudioClip clip, Vector3 position, float volume = 1f)
+    private void PlayAudio(AudioClip clip, Vector3 position, float volumeMultiplier = 1f)
     {
-        AudioSource.PlayClipAtPoint(clip, position, volume);
+        AudioSource.PlayClipAtPoint(clip, position, volumeMultiplier * volume);
     }
 
     public void PlayFootStepSound(Player player)
     {
         PlayAudio(soundListsSO.footstep, player.transform.position);
+    }
+
+    /// <summary>
+    /// Change soundEffect's volume
+    /// </summary>
+    public void ChangeVolume()
+    {
+        volume += 0.1f;
+
+        if (volume > 1.01f)
+        {
+            volume = 0f;
+        }
+
+        PlayerPrefs.SetFloat(PLAYER_PREFS_SOUND_EFFECT_VOLUME, volume);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// Get soundEffect's volume
+    /// </summary>
+    /// <returns></returns>
+    public float GetVolume()
+    {
+        return volume;
     }
 }
