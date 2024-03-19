@@ -48,7 +48,6 @@ public class GameManager : MonoBehaviour
                     state = State.CountdownToStart;
                     OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
-                Debug.Log("Waiting to start.");
                 break;
             case State.CountdownToStart:
                 countdownToStartTime -= Time.deltaTime;
@@ -58,7 +57,6 @@ public class GameManager : MonoBehaviour
                     OnStateChanged?.Invoke(this, EventArgs.Empty);
                     gamePlayingTime = gamePlayingTimeMax;
                 }
-                Debug.Log("Countdown to start.");
                 break;
             case State.GamePlaying:
                 gamePlayingTime -= Time.deltaTime;
@@ -67,10 +65,8 @@ public class GameManager : MonoBehaviour
                     state = State.GameOver;
                     OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
-                Debug.Log("Game is Playing.");
                 break;
             case State.GameOver:
-                Debug.Log("Game Over");
                 break;
             default:
                 break;
