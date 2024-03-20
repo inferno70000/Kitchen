@@ -25,10 +25,18 @@ public class InputManager : MonoBehaviour
         Interact,
         InteractAlternate,
         Pause,
+        GamepadInteract,
+        GamepadInteractAlternate,
+        GamepadPause,
     }
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Debug.LogError("There is more than one InputManager instance.");
+        }
+
         Instance = this;
 
         playerInput = new();
@@ -100,6 +108,12 @@ public class InputManager : MonoBehaviour
                 return playerActions.InteractAlternative.bindings[0].ToDisplayString();
             case Binding.Pause:
                 return playerActions.Pause.bindings[0].ToDisplayString();
+            case Binding.GamepadInteract:
+                return playerActions.Interact.bindings[1].ToDisplayString();
+            case Binding.GamepadInteractAlternate:
+                return playerActions.InteractAlternative.bindings[1].ToDisplayString();
+            case Binding.GamepadPause:
+                return playerActions.Pause.bindings[1].ToDisplayString();
             default:
                 return null;
         }
@@ -139,6 +153,18 @@ public class InputManager : MonoBehaviour
             case Binding.Pause:
                 inputAction = playerActions.Pause;
                 bindingIndex = 0;
+                break;
+            case Binding.GamepadInteract:
+                inputAction = playerActions.Interact;
+                bindingIndex = 1;
+                break;
+            case Binding.GamepadInteractAlternate:
+                inputAction = playerActions.InteractAlternative;
+                bindingIndex = 1;
+                break;
+            case Binding.GamepadPause:
+                inputAction = playerActions.Pause;
+                bindingIndex = 1;
                 break;
             default:
                 break;

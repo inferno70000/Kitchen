@@ -23,4 +23,9 @@ public class MenuUI : MonoBehaviour
 
         Time.timeScale = 1.0f;
     }
+
+    private void Start()
+    {
+        playButton.Select();
+    }
 }
