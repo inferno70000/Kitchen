@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private State state;
     private float countdownToStartTime = 3f;
     private float gamePlayingTime;
-    private float gamePlayingTimeMax = 20f;
+    private float gamePlayingTimeMax = 120f;
     private bool isGamePause;
 
     private void Awake()
@@ -43,8 +43,11 @@ public class GameManager : MonoBehaviour
 
     private void InputManager_OnInteractAction(object sender, EventArgs e)
     {
-        state = State.GamePlaying;
-        OnStateChanged?.Invoke(this, EventArgs.Empty);
+        if (state == State.waitingToStart)
+        {
+            state = State.CountdownToStart;
+            OnStateChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void Update()
@@ -94,7 +97,7 @@ public class GameManager : MonoBehaviour
     {
         return countdownToStartTime;
     }
-    
+
     /// <summary>
     /// Get boolean whether game is countdown
     /// </summary>

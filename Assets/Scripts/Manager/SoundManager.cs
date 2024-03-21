@@ -87,6 +87,11 @@ public class SoundManager : MonoBehaviour
         PlayAudio(soundListsSO.footstep, player.transform.position);
     }
 
+    public void PlayCountdownSound()
+    {
+        PlayAudio(soundListsSO.warning, Vector3.zero);
+    }
+
     /// <summary>
     /// Change soundEffect's volume
     /// </summary>
