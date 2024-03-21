@@ -16,17 +16,21 @@ public class PlateCounter : BaseCounter
 
     private void Update()
     {
-        spawnTimer += Time.deltaTime;
 
-        if (spawnTimer > spawnTimeMax)
+        if (GameManager.Instance.IsGamePlaying())
         {
-            spawnTimer = 0;
+            spawnTimer += Time.deltaTime;
 
-            if (spawnCount < spawnCountMax)
+            if (spawnTimer > spawnTimeMax)
             {
-                OnPlateAdded?.Invoke(this, EventArgs.Empty);
+                spawnTimer = 0;
 
-                spawnCount++;
+                if (spawnCount < spawnCountMax)
+                {
+                    OnPlateAdded?.Invoke(this, EventArgs.Empty);
+
+                    spawnCount++;
+                }
             }
         }
     }

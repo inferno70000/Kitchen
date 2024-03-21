@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
 
     public event EventHandler OnInteractAction;
     public event EventHandler OnInteractAlternativeAction;
+    public event EventHandler OnReBinding;
 
     private const string PLAYER_PREFS_BINDING = "Binding";
 
@@ -90,6 +91,11 @@ public class InputManager : MonoBehaviour
         return inputVector;
     }
 
+    /// <summary>
+    /// Get bindText with given binding
+    /// </summary>
+    /// <param name="binding">Binding want to get text</param>
+    /// <returns></returns>
     public string GetBindingText(Binding binding)
     {
         switch (binding)
@@ -119,6 +125,11 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Rebinding
+    /// </summary>
+    /// <param name="binding">Binding want to change</param>
+    /// <param name="action">action want to execute when rebinding completed</param>
     public void Rebinding(Binding binding, Action action)
     {
         InputAction inputAction = new();
@@ -181,6 +192,7 @@ public class InputManager : MonoBehaviour
             PlayerPrefs.SetString(PLAYER_PREFS_BINDING, playerInput.SaveBindingOverridesAsJson());
             PlayerPrefs.Save();
 
+            OnReBinding?.Invoke(this, EventArgs.Empty); 
         }).Start();
 
         playerActions.Enable();

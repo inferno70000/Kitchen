@@ -184,16 +184,16 @@ public class OptionsUI : MonoBehaviour
         musicText.text = "Music volume: " + Mathf.Round(MusicManager.Instance.GetVolume() * 10);
         soundEffectText.text = "Sound effect volume: " + Mathf.Round(SoundManager.Instance.GetVolume() * 10);
 
-        moveUpText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveUp);
-        moveDownText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveDown);
-        moveLeftText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveLeft);
-        moveRightText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveRight);
-        interactText.text = InputManager.Instance.GetBindingText(InputManager.Binding.Interact);
-        interactAlternateText.text = InputManager.Instance.GetBindingText(InputManager.Binding.InteractAlternate);
-        pauseText.text = InputManager.Instance.GetBindingText(InputManager.Binding.Pause);
-        gamepadInteractText.text = InputManager.Instance.GetBindingText(InputManager.Binding.GamepadInteract);
-        gamepadInteractAlternateText.text = InputManager.Instance.GetBindingText(InputManager.Binding.GamepadInteractAlternate);
-        gamepadPauseText.text = InputManager.Instance.GetBindingText(InputManager.Binding.GamepadPause);
+        moveUpText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveUp).ToUpper();
+        moveDownText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveDown).ToUpper();
+        moveLeftText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveLeft).ToUpper();
+        moveRightText.text = InputManager.Instance.GetBindingText(InputManager.Binding.MoveRight).ToUpper();
+        interactText.text = InputManager.Instance.GetBindingText(InputManager.Binding.Interact).ToUpper();
+        interactAlternateText.text = InputManager.Instance.GetBindingText(InputManager.Binding.InteractAlternate).ToUpper();
+        pauseText.text = InputManager.Instance.GetBindingText(InputManager.Binding.Pause).ToUpper();
+        gamepadInteractText.text = InputManager.Instance.GetBindingText(InputManager.Binding.GamepadInteract).ToUpper();
+        gamepadInteractAlternateText.text = InputManager.Instance.GetBindingText(InputManager.Binding.GamepadInteractAlternate).ToUpper();
+        gamepadPauseText.text = InputManager.Instance.GetBindingText(InputManager.Binding.GamepadPause).ToUpper();
     }
 
     /// <summary>

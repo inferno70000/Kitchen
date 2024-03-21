@@ -20,7 +20,6 @@ public class GameManager : MonoBehaviour
     }
 
     private State state;
-    private float waitingToStartTime = 1f;
     private float countdownToStartTime = 3f;
     private float gamePlayingTime;
     private float gamePlayingTimeMax = 20f;
@@ -37,17 +36,22 @@ public class GameManager : MonoBehaviour
         state = State.waitingToStart;
     }
 
+    private void Start()
+    {
+        InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
+    }
+
+    private void InputManager_OnInteractAction(object sender, EventArgs e)
+    {
+        state = State.GamePlaying;
+        OnStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     private void Update()
     {
         switch (state)
         {
             case State.waitingToStart:
-                waitingToStartTime -= Time.deltaTime;
-                if (waitingToStartTime < 0f)
-                {
-                    state = State.CountdownToStart;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
-                }
                 break;
             case State.CountdownToStart:
                 countdownToStartTime -= Time.deltaTime;
@@ -73,31 +77,54 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get boolean whether game is playing
+    /// </summary>
+    /// <returns>boolean</returns>
     public bool IsGamePlaying()
     {
         return state == State.GamePlaying;
     }
 
+    /// <summary>
+    /// Get countdown timer
+    /// </summary>
+    /// <returns>countdownToStartTime</returns>
     public float GetCountDownToStartTime()
     {
         return countdownToStartTime;
     }
-
+    
+    /// <summary>
+    /// Get boolean whether game is countdown
+    /// </summary>
+    /// <returns>boolean</returns>
     public bool IsCountdownState()
     {
         return state == State.CountdownToStart;
     }
 
+    /// <summary>
+    /// Get boolean whether game is over
+    /// </summary>
+    /// <returns>boolean</returns>
     public bool IsGameOverState()
     {
         return state == State.GameOver;
     }
 
+    /// <summary>
+    /// Get gamePlaying time nomalized
+    /// </summary>
+    /// <returns>float</returns>
     public float GetGamePlayingTimeNomalized()
     {
         return 1 - (gamePlayingTime / gamePlayingTimeMax);
     }
 
+    /// <summary>
+    /// Toggle pause
+    /// </summary>
     public void TogglePause()
     {
         isGamePause = !isGamePause;
