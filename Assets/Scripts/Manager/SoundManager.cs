@@ -82,14 +82,29 @@ public class SoundManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(clip, position, volumeMultiplier * volume);
     }
 
+    /// <summary>
+    /// Play footstep sound at playter position
+    /// </summary>
+    /// <param name="player">Player's instance</param>
     public void PlayFootStepSound(Player player)
     {
         PlayAudio(soundListsSO.footstep, player.transform.position);
     }
 
+    /// <summary>
+    /// Play countdown sound 
+    /// </summary>
     public void PlayCountdownSound()
     {
         PlayAudio(soundListsSO.warning, Vector3.zero);
+    }
+
+    /// <summary>
+    /// Play countdown sound 
+    /// </summary>
+    public void PlayWarningSound(Vector3 position)
+    {
+        PlayAudio(soundListsSO.warning, position);
     }
 
     /// <summary>

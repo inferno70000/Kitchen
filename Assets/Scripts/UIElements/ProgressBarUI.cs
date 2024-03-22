@@ -5,14 +5,18 @@ using UnityEngine.UI;
 
 public class ProgressBarUI : MonoBehaviour
 {
-    [SerializeField] private GameObject ObjectHasProgressBar;
+    [SerializeField] private GameObject objectHasProgressBar;
     private IHasProgressBar iHasProgressBar;
     private Image bar;
 
+    private void Awake()
+    {
+        iHasProgressBar = objectHasProgressBar.GetComponent<IHasProgressBar>();
+        bar = transform.GetChild(1).GetComponent<Image>();
+    }
+
     private void Start()
     {
-        iHasProgressBar = ObjectHasProgressBar.GetComponent<IHasProgressBar>();   
-        bar = transform.GetChild(1).GetComponent<Image>();
         iHasProgressBar.OnProgressChanged += IHasProgressBar_OnProgressChangedEventAgr;
 
         Hide();
@@ -20,6 +24,7 @@ public class ProgressBarUI : MonoBehaviour
 
     private void IHasProgressBar_OnProgressChangedEventAgr(object sender, IHasProgressBar.OnProgressChangedEventAgr e)
     {
+        //Changing progress
         bar.fillAmount = e.progressNomalized;
 
         if (e.progressNomalized == 0 || e.progressNomalized == 1)
@@ -31,7 +36,6 @@ public class ProgressBarUI : MonoBehaviour
             Show();
         }
     }
-
     private void Show()
     {
         gameObject.SetActive(true);

@@ -210,4 +210,13 @@ public class StoveCounter : BaseCounter, IHasProgressBar
 
         return null;
     }
+
+    /// <summary>
+    /// Get boolean whether is fried state or not
+    /// </summary>
+    /// <returns>boolean</returns>
+    public bool IsFriedState()
+    {
+        return state == State.Fried;
+    }
 }
