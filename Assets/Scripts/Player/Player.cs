@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IKitchenObjectParent
+public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    public static Player Instance { get; private set; }
+    //public static Player Instance { get; private set; }
 
     public event EventHandler OnPickupSomething;
 
@@ -18,7 +19,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private const string COUNTER_LAYERMASK = "Interactable";
     private const string KITCHEN_OBJECT_HOLD_POINT = "KitchenObjectHoldPoint";
 
-    [SerializeField] private InputManager inputManager;
     [SerializeField] private float speed = 5f;
     private bool isWalking;
     private LayerMask counterLayerMask;
@@ -30,20 +30,20 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Debug.LogError("There is more than one Player instance.");
-        }
+        //if (Instance != null)
+        //{
+        //    Debug.LogError("There is more than one Player instance.");
+        //}
 
-        Instance = this;
+        //Instance = this;
     }
 
     private void Start()
     {
         counterLayerMask = LayerMask.GetMask(COUNTER_LAYERMASK);
         kitchenObjectHoldPoint = transform.Find(KITCHEN_OBJECT_HOLD_POINT);
-        inputManager.OnInteractAction += InputManager_OnInteractAction;
-        inputManager.OnInteractAlternativeAction += InputManager_OnInteractAlternativeAction;
+        InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
+        InputManager.Instance.OnInteractAlternativeAction += InputManager_OnInteractAlternativeAction;
     }
 
     private void InputManager_OnInteractAlternativeAction(object sender, EventArgs e)
@@ -74,6 +74,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Update()
     {
+        if (!IsOwner) { return; }
+
         Move();
         Interact();
     }
@@ -100,7 +102,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Move()
     {
-        Vector2 inputVector = inputManager.GetMovementVectorNormalized();
+        Vector2 inputVector = InputManager.Instance.GetMovementVectorNormalized();
 
         //update bool for PlayerAnimation's move animation
         isWalking = inputVector != Vector2.zero;

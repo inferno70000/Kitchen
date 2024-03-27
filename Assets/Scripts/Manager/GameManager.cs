@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour
     }
 
     private State state;
-    private float countdownToStartTime = 3f;
+    private float countdownToStartTime = 1f; //3f
     private float gamePlayingTime;
-    private float gamePlayingTimeMax = 120f;
+    private float gamePlayingTimeMax = 500f; //120f
     private bool isGamePause;
 
     private void Awake()
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        state = State.waitingToStart;
+        //state = State.waitingToStart;
     }
 
     private void Start()
@@ -45,8 +45,13 @@ public class GameManager : MonoBehaviour
     {
         if (state == State.waitingToStart)
         {
-            state = State.CountdownToStart;
+            //state = State.CountdownToStart;
+            //OnStateChanged?.Invoke(this, EventArgs.Empty);
+
+            state = State.GamePlaying;
             OnStateChanged?.Invoke(this, EventArgs.Empty);
+            gamePlayingTime = gamePlayingTimeMax;
+            Cursor.visible = false;
         }
     }
 
@@ -134,14 +139,15 @@ public class GameManager : MonoBehaviour
 
         if (isGamePause)
         {
+            Cursor.visible = true;
             OnGamePause?.Invoke(this, EventArgs.Empty);
             Time.timeScale = 0f;
         }
         else
         {
+            Cursor.visible = false;
             OnGameUnPause?.Invoke(this, EventArgs.Empty);
             Time.timeScale = 1f;
         }
-
     }
 }
