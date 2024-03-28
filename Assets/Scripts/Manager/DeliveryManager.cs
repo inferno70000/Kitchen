@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class DeliveryManager : MonoBehaviour
+public class DeliveryManager : NetworkBehaviour
 {
     public static DeliveryManager Instance { get; private set; }
 
@@ -15,7 +16,7 @@ public class DeliveryManager : MonoBehaviour
 
     [SerializeField] private ListRecipeSO listRecipeSO;
     private List<RecipeSO> waitingRecipeSOList;
-    private float spawnRecipeTimer = 0f;
+    private float spawnRecipeTimer = 4f; //0f
     private float spawnRecipeTimeMax = 4f;
     private int spawnRecipeCountMax = 4;
     private int recipeDeliveredSuccess = 0;
@@ -45,12 +46,19 @@ public class DeliveryManager : MonoBehaviour
 
                 if (waitingRecipeSOList.Count < spawnRecipeCountMax)
                 {
-                    RecipeSO waitingRecipeSO = listRecipeSO.recipeSOList[UnityEngine.Random.Range(0, listRecipeSO.recipeSOList.Count)];
-                    waitingRecipeSOList.Add(waitingRecipeSO);
-                    OnDeliverySpawned?.Invoke(this, EventArgs.Empty);
+                    int randomIndex = UnityEngine.Random.Range(0, listRecipeSO.recipeSOList.Count);
+                    AddWaitingRecipeClientRpc(randomIndex);
                 }
             }
         }
+    }
+
+    [ClientRpc]
+    private void AddWaitingRecipeClientRpc(int radomIndex)
+    {
+        RecipeSO waitingRecipeSO = listRecipeSO.recipeSOList[radomIndex];
+        waitingRecipeSOList.Add(waitingRecipeSO);
+        OnDeliverySpawned?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -88,13 +96,38 @@ public class DeliveryManager : MonoBehaviour
             {
                 recipeDeliveredSuccess++;
 
-                waitingRecipeSOList.RemoveAt(i);
-                OnDeliveryRemoved?.Invoke(this, EventArgs.Empty);
-                OnDeliverySuccess?.Invoke(this, EventArgs.Empty);
+                DeliverySuccessServerRpc(i);
+
                 return;
             }
         }
         //player delivery wrong recipe.
+        DeliveryFailServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DeliverySuccessServerRpc(int removeIndex)
+    {
+        DeliverySuccessClientRpc(removeIndex);
+    }
+
+    [ClientRpc]
+    private void DeliverySuccessClientRpc(int removeIndex)
+    {
+        waitingRecipeSOList.RemoveAt(removeIndex);
+        OnDeliveryRemoved?.Invoke(this, EventArgs.Empty);
+        OnDeliverySuccess?.Invoke(this, EventArgs.Empty);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DeliveryFailServerRpc()
+    {
+        DeliveryFailClientRpc();
+    }
+
+    [ClientRpc]
+    private void DeliveryFailClientRpc()
+    {
         OnDeliveryFail?.Invoke(this, EventArgs.Empty);
     }
 
