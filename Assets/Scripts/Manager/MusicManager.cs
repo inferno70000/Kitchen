@@ -10,7 +10,7 @@ public class MusicManager : MonoBehaviour
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
 
-    private float volume = 0.3f;
+    private float volume = 0f;
     private AudioSource audioSource;
 
     private void Awake()
