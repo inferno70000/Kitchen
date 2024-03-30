@@ -1,11 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class KitchenObject : MonoBehaviour
+public class KitchenObject : NetworkBehaviour
 {
     [SerializeField] private KitchenObjectSO KitchenObjectSO;
     [SerializeField] private IKitchenObjectParent kitchenObjectParent;
+    private FollowTranform followTranform;
+
+    protected virtual void Awake()
+    {
+        followTranform = GetComponent<FollowTranform>();
+    }
 
     /// <summary>
     /// Get KitchenObjectSO form this KitchenObject
@@ -31,6 +38,21 @@ public class KitchenObject : MonoBehaviour
     /// <param name="kitchenObjectParent">New parent</param>
     public void SetKitchenObjectParent(IKitchenObjectParent kitchenObjectParent)
     {
+        SetKitchenObjectParentServerRpc(kitchenObjectParent.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetKitchenObjectParentServerRpc(NetworkObjectReference kitchenObjectParentNetworkObjectReference)
+    {
+        SetKitchenObjectParentClientRpc(kitchenObjectParentNetworkObjectReference);
+    }
+
+    [ClientRpc]
+    private void SetKitchenObjectParentClientRpc(NetworkObjectReference kitchenObjectParentNetworkObjectReference)
+    {
+        kitchenObjectParentNetworkObjectReference.TryGet(out var kitchenObjectParentNetworkObject);
+        IKitchenObjectParent kitchenObjectParent = kitchenObjectParentNetworkObject.GetComponent<IKitchenObjectParent>();
+
         //clear KitchenObject on old parent if existed
         this.kitchenObjectParent?.ClearKitchenObject();
 
@@ -44,8 +66,8 @@ public class KitchenObject : MonoBehaviour
         }
 
         kitchenObjectParent.SetKitchenObject(this);
-        transform.parent = kitchenObjectParent.GetFollowingObjectTopPoint();
-        transform.localPosition = Vector3.zero;
+
+        followTranform.SetTargetTransform(kitchenObjectParent.GetFollowingObjectTopPoint());
     }
 
     /// <summary>
@@ -64,13 +86,9 @@ public class KitchenObject : MonoBehaviour
     /// <param name="kitchenObjectSO">Kitchen object needs to spawn</param>
     /// <param name="kitchenObjectParent">Parent of the new kitchen object</param>
     /// <returns>KitchenObject</returns>
-    public static KitchenObject Spawn(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
+    public static void Spawn(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
     {
-        Transform kitchenTransform = Instantiate(kitchenObjectSO.prefab);
-        KitchenObject kitchenObject = kitchenTransform.GetComponent<KitchenObject>();
-        kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
-
-        return kitchenObject;
+        KitchenObjectNetworkManager.Instance.Spawn(kitchenObjectSO, kitchenObjectParent);
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public interface IKitchenObjectParent
@@ -32,4 +33,9 @@ public interface IKitchenObjectParent
     /// </summary>
     /// <returns>Boolean</returns>
     public bool HasKitchenObject();
+    /// <summary>
+    /// Get network object of this object
+    /// </summary>
+    /// <returns></returns>
+    public NetworkObject GetNetworkObject();
 }

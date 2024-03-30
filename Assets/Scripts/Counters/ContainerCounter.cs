@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class ContainerCounter : BaseCounter
@@ -15,7 +16,19 @@ public class ContainerCounter : BaseCounter
         if (!player.HasKitchenObject())
         {
             KitchenObject.Spawn(kitchenObjectSO, player);
-            OnPlayerGrabbedObject?.Invoke(this, EventArgs.Empty);
+            InteractServerRpc();
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractServerRpc()
+    {
+        InteractClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractClientRpc()
+    {
+        OnPlayerGrabbedObject?.Invoke(this, EventArgs.Empty);
     }
 }
