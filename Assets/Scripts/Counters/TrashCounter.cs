@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class TrashCounter : BaseCounter
@@ -18,7 +19,19 @@ public class TrashCounter : BaseCounter
         {
             player.GetKitchenObject().DestroySelf();
 
-            OnAnyObjectTrahed?.Invoke(this, EventArgs.Empty);
+            InteractServerRpc();
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)] 
+    private void InteractServerRpc()
+    {
+        InteractClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractClientRpc()
+    {
+        OnAnyObjectTrahed?.Invoke(this, EventArgs.Empty);
     }
 }
