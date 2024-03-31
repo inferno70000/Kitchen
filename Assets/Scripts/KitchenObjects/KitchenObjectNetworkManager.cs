@@ -14,6 +14,11 @@ public class KitchenObjectNetworkManager : NetworkBehaviour
         Instance = this;
     }
 
+    /// <summary>
+    /// Spawn kitchen object by server rpc
+    /// </summary>
+    /// <param name="kitchenObjectSO">kitchen object to spawn</param>
+    /// <param name="kitchenObjectParent">parent of spawned kitchen object</param>
     public void Spawn(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
     {
         SpawnServerRpc(GetKitchenObjectIndex(kitchenObjectSO), kitchenObjectParent.GetNetworkObject());
@@ -42,5 +47,30 @@ public class KitchenObjectNetworkManager : NetworkBehaviour
     private KitchenObjectSO GetKitchenObjectSOFromIndex(int index)
     {
         return listKitchenObjectSO.kitchenObjectSOList[index];
+    }
+
+    public void DestroyKitchenObject(KitchenObject kitchenObject)
+    {
+        DestroyKitchenObjectServerRpc(kitchenObject.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)] 
+    private void DestroyKitchenObjectServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        KitchenObject kitchenObject = networkObject.GetComponent<KitchenObject>();
+
+        ClearKitchenObjectOnParentClientRpc(networkObjectReference);
+
+        kitchenObject.DestroySelf();
+    }
+
+    [ClientRpc] 
+    private void ClearKitchenObjectOnParentClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        KitchenObject kitchenObject = networkObject.GetComponent<KitchenObject>();
+
+        kitchenObject.ClearKitchenObjectOnParent();
     }
 }

@@ -6,7 +6,7 @@ public class FollowTranform : MonoBehaviour
 {
     private Transform target;
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         if (target == null) { return; }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class KitchenObject : NetworkBehaviour
@@ -30,6 +31,11 @@ public class KitchenObject : NetworkBehaviour
     public IKitchenObjectParent GetClearCounter()
     {
         return kitchenObjectParent;
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
     }
 
     /// <summary>
@@ -75,16 +81,20 @@ public class KitchenObject : NetworkBehaviour
     /// </summary>
     public void DestroySelf()
     {
-        Debug.Log(OwnerClientId);
+        Destroy(gameObject);
+    }
+    
+    /// <summary>
+    /// Clear kitchen object on this' parent
+    /// </summary>
+    public void ClearKitchenObjectOnParent()
+    {
         kitchenObjectParent.ClearKitchenObject();
-        DespawnServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void DespawnServerRpc()
+    public static void DestroyKitchenObject(KitchenObject kitchenObject)
     {
-        NetworkObject.Despawn(true);
-        Destroy(gameObject);
+        KitchenObjectNetworkManager.Instance.DestroyKitchenObject(kitchenObject);
     }
 
     /// <summary>
