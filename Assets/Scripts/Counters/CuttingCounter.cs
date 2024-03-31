@@ -107,9 +107,6 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
         if (HasKitchenObject() && HasRecipeForInput(GetKitchenObject().GetKitchenScriptableSO()))
         {
             InteractAltServerRpc();
-
-            //Cutting progress is done
-            DoneCuttingProgressServerRpc();
         }
     }
 
@@ -117,6 +114,15 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
     private void InteractAltServerRpc()
     {
         InteractAltClientRpc();
+
+        //Cutting progress is done
+        KitchenObjectSO kitchenObjectSO = GetKitchenObject().GetKitchenScriptableSO();
+        if (CuttingProgress >= GetCuttingRecipeSOFromInput(kitchenObjectSO).CuttingProgressMax)
+        {
+            KitchenObject.DestroyKitchenObject(GetKitchenObject());
+
+            KitchenObject.Spawn(GetOuputFromInput(kitchenObjectSO), this);
+        }
     }
 
     [ClientRpc]
@@ -135,18 +141,6 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
         OnCut?.Invoke(this, EventArgs.Empty);
 
         OnAnyCut?.Invoke(this, EventArgs.Empty);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void DoneCuttingProgressServerRpc()
-    {
-        KitchenObjectSO kitchenObjectSO = GetKitchenObject().GetKitchenScriptableSO();
-        if (CuttingProgress >= GetCuttingRecipeSOFromInput(kitchenObjectSO).CuttingProgressMax)
-        {
-            KitchenObject.DestroyKitchenObject(GetKitchenObject());
-
-            KitchenObject.Spawn(GetOuputFromInput(kitchenObjectSO), this);
-        }
     }
 
     private bool HasRecipeForInput(KitchenObjectSO kitchenObjectSO)
