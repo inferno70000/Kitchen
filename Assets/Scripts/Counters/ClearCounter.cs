@@ -17,17 +17,17 @@ public class ClearCounter : BaseCounter
                 {
                     if (plateKitchenObject.TryAddingKitchenObject(GetKitchenObject().GetKitchenScriptableSO()))
                     {
-                        GetKitchenObject().DestroySelf();
+                        KitchenObject.DestroyKitchenObject(GetKitchenObject());
                     }
                 }
                 else
-                {
+                { 
                     //There is a plate on the counter
                     if (GetKitchenObject().TryGetPlateKitchenObject(out plateKitchenObject))
                     {
                         if (plateKitchenObject.TryAddingKitchenObject(player.GetKitchenObject().GetKitchenScriptableSO()))
                         {
-                            player.GetKitchenObject().DestroySelf();
+                            KitchenObject.DestroyKitchenObject(player.GetKitchenObject());
                         }
                     }
                 }

@@ -39,12 +39,12 @@ public class KitchenObjectNetworkManager : NetworkBehaviour
         kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
     }
 
-    private int GetKitchenObjectIndex(KitchenObjectSO kitchenObjectSO)
+    public int GetKitchenObjectIndex(KitchenObjectSO kitchenObjectSO)
     {
         return listKitchenObjectSO.kitchenObjectSOList.IndexOf(kitchenObjectSO);
     }
 
-    private KitchenObjectSO GetKitchenObjectSOFromIndex(int index)
+    public KitchenObjectSO GetKitchenObjectSOFromIndex(int index)
     {
         return listKitchenObjectSO.kitchenObjectSOList[index];
     }

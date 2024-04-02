@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlateKitchenObject : KitchenObject
@@ -30,19 +31,46 @@ public class PlateKitchenObject : KitchenObject
         //kitchenObject is valid and does not have in added list
         if (validKitchenObjectSOList.Contains(kitchenObjectSO) && !kitchenObjectSOList.Contains(kitchenObjectSO))
         {
-            kitchenObjectSOList.Add(kitchenObjectSO);
-            OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs
-            {
-                KitchenObjectSO = kitchenObjectSO,
-            });
+            AddKitchenObjectToPlateServerRpc(GetIndexOfKitchenObjectSOValid(kitchenObjectSO));
             return true;
         }
 
         return false;
     }
 
+    [ServerRpc(RequireOwnership = false)] 
+    private void AddKitchenObjectToPlateServerRpc(int index)
+    {
+        AddKitchenObjectToPlateClientRpc(index);
+    }
+
+    [ClientRpc]
+    private void AddKitchenObjectToPlateClientRpc(int index)
+    {
+        //kitchenObjectNetworkObjectReference.TryGet(out NetworkObject kitchenObjectNetworkObject);
+        //KitchenObjectSO kitchenObjectSO = kitchenObjectNetworkObject.GetComponent<KitchenObject>().GetKitchenScriptableSO();
+
+        KitchenObjectSO kitchenObjectSO = GetKitchenObjectSOValidFromIndex(index);
+
+        kitchenObjectSOList.Add(kitchenObjectSO);
+        OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs
+        {
+            KitchenObjectSO = kitchenObjectSO,
+        });
+    }
+
     public List<KitchenObjectSO> GetKitchenObjectSOList()
     {
         return kitchenObjectSOList;
+    }
+
+    private int GetIndexOfKitchenObjectSOValid(KitchenObjectSO kitchenObjectSO)
+    {
+        return validKitchenObjectSOList.IndexOf(kitchenObjectSO);
+    }
+
+    private KitchenObjectSO GetKitchenObjectSOValidFromIndex(int index)
+    {
+        return validKitchenObjectSOList[index];
     }
 }

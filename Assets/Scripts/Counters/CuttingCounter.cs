@@ -21,33 +21,19 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
 
     public override void Interact(Player player)
     {
-        InteracServerRpc(player.GetNetworkObject());
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void InteracServerRpc(NetworkObjectReference playerNetworkObjectReference)
-    {
-        InteractClientRpc(playerNetworkObjectReference);
-    }
-
-    [ClientRpc]
-    private void InteractClientRpc(NetworkObjectReference playerNetworkObjectReference)
-    {
-        playerNetworkObjectReference.TryGet(out NetworkObject playerNetworkObject);
-        Player player = playerNetworkObject.GetComponent<Player>();
-
         //There is kitchen object on the counter
         if (HasKitchenObject())
         {
             //Player has a kitchen object
             if (player.HasKitchenObject())
             {
+                KitchenObject kitchenObject = player.GetKitchenObject();
                 //Player is holding a plate
                 if (player.GetKitchenObject().TryGetPlateKitchenObject(out PlateKitchenObject plateKitchenObject))
                 {
                     if (plateKitchenObject.TryAddingKitchenObject(GetKitchenObject().GetKitchenScriptableSO()))
                     {
-                        GetKitchenObject().DestroySelf();
+                        KitchenObject.DestroyKitchenObject(GetKitchenObject());
                     }
                 }
                 else
@@ -57,7 +43,7 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
                     {
                         if (plateKitchenObject.TryAddingKitchenObject(player.GetKitchenObject().GetKitchenScriptableSO()))
                         {
-                            player.GetKitchenObject().DestroySelf();
+                            KitchenObject.DestroyKitchenObject(kitchenObject);
                         }
                     }
                 }
@@ -85,12 +71,7 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
                 //Counter has a recipe for kitchen object
                 if (HasRecipeForInput(kitchenObject.GetKitchenScriptableSO()))
                 {
-                    CuttingProgress = 0;
-                    CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOFromInput(kitchenObject.GetKitchenScriptableSO());
-                    OnProgressChanged?.Invoke(this, new IHasProgressBar.OnProgressChangedEventAgr
-                    {
-                        progressNomalized = (float)CuttingProgress / cuttingRecipeSO.CuttingProgressMax
-                    });
+                    InteracServerRpc();
                 }
             }
             //Player has no kitchen object
@@ -99,6 +80,22 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
 
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteracServerRpc()
+    {
+        InteractClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractClientRpc()
+    {
+        CuttingProgress = 0;
+        OnProgressChanged?.Invoke(this, new IHasProgressBar.OnProgressChangedEventAgr
+        {
+            progressNomalized = 0f
+        });
     }
 
     public override void InteractAlternative(Player player)
