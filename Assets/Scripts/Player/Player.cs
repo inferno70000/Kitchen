@@ -21,6 +21,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     private const string KITCHEN_OBJECT_HOLD_POINT = "KitchenObjectHoldPoint";
 
     [SerializeField] private float speed = 5f;
+    [SerializeField] private List<Vector3> spawnPositionList = new();
     private bool isWalking;
     private LayerMask counterLayerMask;
     private BaseCounter selectedCounter;
@@ -32,6 +33,9 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        transform.position = spawnPositionList[(int)OwnerClientId];
+        transform.rotation = Quaternion.Euler(0, 180, 0); 
 
         LocalInstance = this;
         OnSpawn?.Invoke(this, EventArgs.Empty);

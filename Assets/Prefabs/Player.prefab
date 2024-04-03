@@ -75,6 +75,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  spawnPositionList:
+  - {x: 5, y: 0, z: 1}
+  - {x: -2, y: 0, z: 1}
+  - {x: -2, y: 0, z: -3}
+  - {x: 5, y: 0, z: -3}
 --- !u!114 &8647331108043974100
 MonoBehaviour:
   m_ObjectHideFlags: 0

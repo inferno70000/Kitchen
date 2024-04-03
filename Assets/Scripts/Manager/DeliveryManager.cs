@@ -140,6 +140,10 @@ public class DeliveryManager : NetworkBehaviour
         return waitingRecipeSOList;
     }
 
+    /// <summary>
+    /// Get count of recipe delivery success
+    /// </summary>
+    /// <returns></returns>
     public int GetRecipeDeliveredSuccess()
     {
         return recipeDeliveredSuccess;
