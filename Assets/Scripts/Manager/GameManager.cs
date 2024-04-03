@@ -10,7 +10,9 @@ public class GameManager : NetworkBehaviour
 
     public event EventHandler OnStateChanged;
     public event EventHandler OnGamePause;
-    public event EventHandler OnGameUnPause;
+    public event EventHandler OnGameUnPause;    
+    public event EventHandler OnMultiPlayerGamePause;
+    public event EventHandler OnMultiPlayerGameUnPause;
     public event EventHandler OnLocalPlayerReady;
 
     public enum State
@@ -24,9 +26,11 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<State> state = new(State.waitingToStart);
     private NetworkVariable<float> countdownToStartTime = new(3f);
     private NetworkVariable<float> gamePlayingTime = new(0f);
+    private NetworkVariable<bool> isGamePause = new(false);
     private float gamePlayingTimeMax = 120f;
-    private bool isGamePause;
+    private bool isLocalGamePause;
     private Dictionary<ulong, bool> playersReadyDictionary = new();
+    private Dictionary<ulong, bool> playersPauseDictionary = new();
 
     private void Awake()
     {
@@ -42,6 +46,21 @@ public class GameManager : NetworkBehaviour
     {
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         state.OnValueChanged += State_OnValueChanged;
+        isGamePause.OnValueChanged += IsGamePause_OnValueChanged;
+    }
+
+    private void IsGamePause_OnValueChanged(bool previousValue, bool newValue)
+    {
+        if (newValue)
+        {
+            Time.timeScale = 0f;
+            OnMultiPlayerGamePause?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            OnMultiPlayerGameUnPause?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void State_OnValueChanged(State previousValue, State newValue)
@@ -159,17 +178,50 @@ public class GameManager : NetworkBehaviour
     /// </summary>
     public void TogglePause()
     {
-        isGamePause = !isGamePause;
+        isLocalGamePause = !isLocalGamePause;
 
-        if (isGamePause)
+        if (isLocalGamePause)
         {
             OnGamePause?.Invoke(this, EventArgs.Empty);
-            Time.timeScale = 0f;
+            PauseMultiPlayerServerRpc();
         }
         else
         {
             OnGameUnPause?.Invoke(this, EventArgs.Empty);
-            Time.timeScale = 1f;
+            UnpauseMultiPlayerServerRpc();
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PauseMultiPlayerServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playersPauseDictionary[serverRpcParams.Receive.SenderClientId] = true;
+
+        UpdateGamePauseState();
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void UnpauseMultiPlayerServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playersPauseDictionary[serverRpcParams.Receive.SenderClientId] = false;
+
+        UpdateGamePauseState();
+    }
+
+    private void UpdateGamePauseState()
+    {
+
+        foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (playersPauseDictionary.ContainsKey(clientId) && playersPauseDictionary[clientId])
+            {
+                //One player paused
+                isGamePause.Value = true;
+                return;
+            }
+        }
+
+        //All player unpause
+        isGamePause.Value = false;
     }
 }
