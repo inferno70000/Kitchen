@@ -31,6 +31,7 @@ public class GameManager : NetworkBehaviour
     private bool isLocalGamePause;
     private Dictionary<ulong, bool> playersReadyDictionary = new();
     private Dictionary<ulong, bool> playersPauseDictionary = new();
+    private bool automaticUnpauseGame;
 
     private void Awake()
     {
@@ -47,6 +48,21 @@ public class GameManager : NetworkBehaviour
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         state.OnValueChanged += State_OnValueChanged;
         isGamePause.OnValueChanged += IsGamePause_OnValueChanged;
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+    }
+
+    private void LateUpdate()
+    {
+        if (automaticUnpauseGame)
+        {
+            automaticUnpauseGame = false;
+            UpdateGamePauseState();
+        }
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong obj)
+    {
+        automaticUnpauseGame = true;
     }
 
     private void IsGamePause_OnValueChanged(bool previousValue, bool newValue)

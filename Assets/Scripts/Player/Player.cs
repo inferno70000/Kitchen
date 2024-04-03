@@ -39,6 +39,16 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
 
         LocalInstance = this;
         OnSpawn?.Invoke(this, EventArgs.Empty);
+
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if (clientId == OwnerClientId && HasKitchenObject())
+        {
+            KitchenObjectNetworkManager.Instance.DestroyKitchenObject(GetKitchenObject());  
+        }
     }
 
     private void Start()
