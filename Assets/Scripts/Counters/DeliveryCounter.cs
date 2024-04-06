@@ -14,7 +14,7 @@ public class DeliveryCounter : BaseCounter
             {
                 DeliveryManager.Instance.Delivery(plateKitchenObject);
 
-                KitchenObjectNetworkManager.Instance.DestroyKitchenObject(player.GetKitchenObject());
+                GameNetworkManager.Instance.DestroyKitchenObject(player.GetKitchenObject());
             }
         }
     }

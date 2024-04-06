@@ -6,11 +6,13 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
+    [SerializeField] private GameObject playerPrefab;
+
     public static GameManager Instance { get; private set; }
 
     public event EventHandler OnStateChanged;
     public event EventHandler OnGamePause;
-    public event EventHandler OnGameUnPause;    
+    public event EventHandler OnGameUnPause;
     public event EventHandler OnMultiPlayerGamePause;
     public event EventHandler OnMultiPlayerGameUnPause;
     public event EventHandler OnLocalPlayerReady;
@@ -49,6 +51,25 @@ public class GameManager : NetworkBehaviour
         state.OnValueChanged += State_OnValueChanged;
         isGamePause.OnValueChanged += IsGamePause_OnValueChanged;
         NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+    }
+
+    private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        if (IsServer)
+        {
+            SpawnPlayerServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    private void SpawnPlayerServerRpc()
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Transform player = Instantiate(playerPrefab.transform);
+            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        }
     }
 
     private void LateUpdate()
@@ -56,7 +77,8 @@ public class GameManager : NetworkBehaviour
         if (automaticUnpauseGame)
         {
             automaticUnpauseGame = false;
-            UpdateGamePauseState();
+
+            UpdateGamePauseStateServerRpc();
         }
     }
 
@@ -94,13 +116,13 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)] 
+    [ServerRpc(RequireOwnership = false)]
     private void UpdatePlayersReadyServerRpc(ServerRpcParams serverRpcParams = default)
     {
         playersReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
 
         bool allPlayersReady = true;
-        foreach (ulong  clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             if (!playersReadyDictionary.ContainsKey(clientId) || !playersReadyDictionary[clientId])
             {
@@ -108,7 +130,7 @@ public class GameManager : NetworkBehaviour
             }
         }
 
-        if(allPlayersReady)
+        if (allPlayersReady)
         {
             state.Value = State.CountdownToStart;
         }
@@ -172,6 +194,15 @@ public class GameManager : NetworkBehaviour
     }
 
     /// <summary>
+    /// Get boolean whether game is waiting to start
+    /// </summary>
+    /// <returns>boolean</returns>
+    public bool IsWaitingState()
+    {
+        return state.Value == State.waitingToStart;
+    }
+
+    /// <summary>
     /// Get boolean whether game is over
     /// </summary>
     /// <returns>boolean</returns>
@@ -215,7 +246,7 @@ public class GameManager : NetworkBehaviour
 
         UpdateGamePauseState();
     }
-    
+
     [ServerRpc(RequireOwnership = false)]
     private void UnpauseMultiPlayerServerRpc(ServerRpcParams serverRpcParams = default)
     {
@@ -224,9 +255,14 @@ public class GameManager : NetworkBehaviour
         UpdateGamePauseState();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdateGamePauseStateServerRpc()
+    {
+        UpdateGamePauseState();
+    }
+
     private void UpdateGamePauseState()
     {
-
         foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             if (playersPauseDictionary.ContainsKey(clientId) && playersPauseDictionary[clientId])

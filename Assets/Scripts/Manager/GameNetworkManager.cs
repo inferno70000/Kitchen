@@ -1,17 +1,63 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class KitchenObjectNetworkManager : NetworkBehaviour
+public class GameNetworkManager : NetworkBehaviour
 {
-    public static KitchenObjectNetworkManager Instance;
+    public static GameNetworkManager Instance;
+
+    public event EventHandler OnTryingToJoin;
+    public event EventHandler OnFailedToJoin;
+
+    private const int MAX_PLAYERS = 4;
 
     [SerializeField] private ListKitchenObjectSO listKitchenObjectSO;
 
     private void Awake()
     {
         Instance = this;
+
+        DontDestroyOnLoad(this);
+    }
+
+    public void StartHost()
+    {
+        NetworkManager.Singleton.ConnectionApprovalCallback += NetworkManager_ConnectionApprovalCallback;
+        NetworkManager.Singleton.StartHost();
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong obj)
+    {
+        OnFailedToJoin?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void StartClient()
+    {
+        OnTryingToJoin?.Invoke(this, EventArgs.Empty);
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        NetworkManager.Singleton.StartClient();
+    }
+
+    private void NetworkManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
+    {
+        if (SceneManager.GetActiveScene().name != Loader.Scene.CharacterSelectionScene.ToString())
+        {
+            connectionApprovalResponse.Approved = false;
+            connectionApprovalResponse.Reason = "Game has already played.";
+            return;
+        }
+
+        if (NetworkManager.Singleton.ConnectedClientsIds.Count >= MAX_PLAYERS)
+        {
+            connectionApprovalResponse.Approved = false;
+            connectionApprovalResponse.Reason = "Game is full.";
+            return;
+        }
+
+        connectionApprovalResponse.Approved = true;
     }
 
     /// <summary>
@@ -68,7 +114,7 @@ public class KitchenObjectNetworkManager : NetworkBehaviour
         DestroyKitchenObjectServerRpc(kitchenObject.GetNetworkObject());
     }
 
-    [ServerRpc(RequireOwnership = false)] 
+    [ServerRpc(RequireOwnership = false)]
     private void DestroyKitchenObjectServerRpc(NetworkObjectReference networkObjectReference)
     {
         networkObjectReference.TryGet(out NetworkObject networkObject);
@@ -79,7 +125,7 @@ public class KitchenObjectNetworkManager : NetworkBehaviour
         kitchenObject.DestroySelf();
     }
 
-    [ClientRpc] 
+    [ClientRpc]
     private void ClearKitchenObjectOnParentClientRpc(NetworkObjectReference networkObjectReference)
     {
         networkObjectReference.TryGet(out NetworkObject networkObject);

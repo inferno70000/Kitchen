@@ -88,7 +88,7 @@ public class StoveCounter : BaseCounter, IHasProgressBar
                     KitchenObject.Spawn(fryingRecipeSO.output, this);
 
                     UpdateBurningRecipeSOValueClientRpc(
-                        KitchenObjectNetworkManager.Instance.GetKitchenObjectIndex(GetKitchenObject().GetKitchenScriptableSO())
+                        GameNetworkManager.Instance.GetKitchenObjectIndex(GetKitchenObject().GetKitchenScriptableSO())
                         );
 
                     state.Value = State.Fried;
@@ -120,14 +120,14 @@ public class StoveCounter : BaseCounter, IHasProgressBar
     [ClientRpc]
     private void UpdateBurningRecipeSOValueClientRpc(int index)
     {
-        KitchenObjectSO kitchenObjectSO = KitchenObjectNetworkManager.Instance.GetKitchenObjectSOFromIndex(index);
+        KitchenObjectSO kitchenObjectSO = GameNetworkManager.Instance.GetKitchenObjectSOFromIndex(index);
         burningRecipeSO = GetBurningRecipeSOFromInput(kitchenObjectSO);
     }
 
     [ClientRpc]
     private void UpdateFryingRecipeSOValueClientRpc(int index)
     {
-        KitchenObjectSO kitchenObjectSO = KitchenObjectNetworkManager.Instance.GetKitchenObjectSOFromIndex(index);
+        KitchenObjectSO kitchenObjectSO = GameNetworkManager.Instance.GetKitchenObjectSOFromIndex(index);
         fryingRecipeSO = GetFryingRecipeSOFromInput(kitchenObjectSO);
     }
 
@@ -202,7 +202,7 @@ public class StoveCounter : BaseCounter, IHasProgressBar
         state.Value = State.Frying;
 
         UpdateFryingRecipeSOValueClientRpc(
-                        KitchenObjectNetworkManager.Instance.GetKitchenObjectIndex(kitchenObject.GetKitchenScriptableSO())
+                        GameNetworkManager.Instance.GetKitchenObjectIndex(kitchenObject.GetKitchenScriptableSO())
                         );
     }
 

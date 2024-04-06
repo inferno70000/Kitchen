@@ -47,7 +47,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     {
         if (clientId == OwnerClientId && HasKitchenObject())
         {
-            KitchenObjectNetworkManager.Instance.DestroyKitchenObject(GetKitchenObject());  
+            GameNetworkManager.Instance.DestroyKitchenObject(GetKitchenObject());  
         }
     }
 

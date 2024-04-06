@@ -94,7 +94,7 @@ public class KitchenObject : NetworkBehaviour
 
     public static void DestroyKitchenObject(KitchenObject kitchenObject)
     {
-        KitchenObjectNetworkManager.Instance.DestroyKitchenObject(kitchenObject);
+        GameNetworkManager.Instance.DestroyKitchenObject(kitchenObject);
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ public class KitchenObject : NetworkBehaviour
     /// <returns>KitchenObject</returns>
     public static void Spawn(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
     {
-        KitchenObjectNetworkManager.Instance.Spawn(kitchenObjectSO, kitchenObjectParent);
+        GameNetworkManager.Instance.Spawn(kitchenObjectSO, kitchenObjectParent);
     }
 
     /// <summary>
