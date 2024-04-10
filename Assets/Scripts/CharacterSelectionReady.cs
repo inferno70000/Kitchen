@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -6,20 +7,28 @@ using UnityEngine.UI;
 
 public class CharacterSelectionReady : NetworkBehaviour
 {
-    [SerializeField] private Button readyButton;
+
+    public static CharacterSelectionReady Instance { get; private set; }
+
+    public event EventHandler OnReadyChanged;
+
     private Dictionary<ulong, bool> playersReadyDictionary = new();
 
-    private void Start()
+
+    private void Awake()
     {
-        readyButton.onClick.AddListener(() =>
-        {
-            UpdatePlayersReadyServerRpc();
-        });
+        Instance = this;
+    }
+
+    public void UpdatePlayersReady()
+    {
+        UpdatePlayersReadyServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void UpdatePlayersReadyServerRpc(ServerRpcParams serverRpcParams = default)
     {
+        SetPlayerReadyClientRpc(serverRpcParams.Receive.SenderClientId);
         playersReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
 
         bool allPlayersReady = true;
@@ -35,5 +44,18 @@ public class CharacterSelectionReady : NetworkBehaviour
         {
             Loader.LoadNetwork(Loader.Scene.GameScene);
         }
+    }
+
+    [ClientRpc]
+    private void SetPlayerReadyClientRpc(ulong clientId)
+    {
+        playersReadyDictionary[clientId] = true;
+
+        OnReadyChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public bool IsPlayerReady(ulong clientId)
+    {
+        return playersReadyDictionary.ContainsKey(clientId) && playersReadyDictionary[clientId];
     }
 }

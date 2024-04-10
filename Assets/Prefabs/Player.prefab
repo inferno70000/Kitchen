@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 519287768
+  GlobalObjectIdHash: 4154671358
   InScenePlacedSourceGlobalObjectIdHash: 519287768
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -80,6 +80,7 @@ MonoBehaviour:
   - {x: -2, y: 0, z: 1}
   - {x: -2, y: 0, z: -3}
   - {x: 5, y: 0, z: -3}
+  playerVisual: {fileID: 7158290161454121457}
 --- !u!114 &8647331108043974100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,6 +327,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3394623157557706587}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7158290161454121457 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5497563909104549546, guid: 1c5dda3c7cd3cf742afcade5419faeab,
+    type: 3}
+  m_PrefabInstance: {fileID: 3394623157557706587}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190640932069282684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25938de277c1d746bd77e1d861a0b81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &8971347920016397839 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6024899996280613204, guid: 1c5dda3c7cd3cf742afcade5419faeab,

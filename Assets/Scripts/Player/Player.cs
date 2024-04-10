@@ -22,6 +22,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
 
     [SerializeField] private float speed = 5f;
     [SerializeField] private List<Vector3> spawnPositionList = new();
+    [SerializeField] private PlayerVisual playerVisual;
     private bool isWalking;
     private LayerMask counterLayerMask;
     private BaseCounter selectedCounter;
@@ -34,7 +35,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     {
         base.OnNetworkSpawn();
 
-        transform.position = spawnPositionList[(int)OwnerClientId];
+        transform.position = spawnPositionList[GameNetworkManager.Instance.GetPlayerIndexDataFromLocalId(OwnerClientId)];
         transform.rotation = Quaternion.Euler(0, 180, 0); 
 
         LocalInstance = this;
@@ -57,6 +58,10 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         kitchenObjectHoldPoint = transform.Find(KITCHEN_OBJECT_HOLD_POINT);
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         InputManager.Instance.OnInteractAlternativeAction += InputManager_OnInteractAlternativeAction;
+
+
+        PlayerData playerData = GameNetworkManager.Instance.GetPlayerDataFromLocalId(OwnerClientId);
+        playerVisual.SetPlayerColor(GameNetworkManager.Instance.GetColorFromColorId(playerData.colorId));
     }
 
     private void InputManager_OnInteractAlternativeAction(object sender, EventArgs e)

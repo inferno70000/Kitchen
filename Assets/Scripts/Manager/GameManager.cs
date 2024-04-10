@@ -54,17 +54,24 @@ public class GameManager : NetworkBehaviour
         NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
     }
 
+
     private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        if (IsServer)
+
+        if (sceneName == Loader.Scene.GameScene.ToString())
         {
-            SpawnPlayerServerRpc();
+            if (IsServer)
+            {
+                SpawnPlayerServerRpc();
+            }
         }
     }
 
     [ServerRpc]
     private void SpawnPlayerServerRpc()
     {
+        Debug.Log("spawn");
+
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             Transform player = Instantiate(playerPrefab.transform);
