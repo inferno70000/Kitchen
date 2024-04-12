@@ -70,8 +70,6 @@ public class GameManager : NetworkBehaviour
     [ServerRpc]
     private void SpawnPlayerServerRpc()
     {
-        Debug.Log("spawn");
-
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
             Transform player = Instantiate(playerPrefab.transform);

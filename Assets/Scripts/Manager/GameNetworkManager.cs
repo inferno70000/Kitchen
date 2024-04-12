@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,10 +16,13 @@ public class GameNetworkManager : NetworkBehaviour
 
     public NetworkList<PlayerData> playerDataList { get; private set; }
 
-    private const int MAX_PLAYERS = 4;
+    public const int MAX_PLAYERS = 4;
+
+    private const string PLAYER_PREFS_PLAYER_NAME = "PlayerName";
 
     [SerializeField] private ListKitchenObjectSO listKitchenObjectSO;
     [SerializeField] private List<Color> colorList = new();
+    private string playerName;
 
     private void Awake()
     {
@@ -28,14 +32,27 @@ public class GameNetworkManager : NetworkBehaviour
         DontDestroyOnLoad(this);
 
         playerDataList = new();
+
+        playerName = PlayerPrefs.GetString(PLAYER_PREFS_PLAYER_NAME, "Player " + UnityEngine.Random.Range(0, 1000));
     }
 
     public void StartHost()
     {
         NetworkManager.Singleton.ConnectionApprovalCallback += NetworkManager_ConnectionApprovalCallback;
-        NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
+        NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_Server_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Server_OnClientDisconnectCallback;
         NetworkManager.Singleton.StartHost();
+    }
+
+    public string GetPlayerName()
+    {
+        return playerName;  
+    }
+
+    public void SetPlayerName(string playerName)
+    {
+        this.playerName = playerName;
+        PlayerPrefs.SetString(PLAYER_PREFS_PLAYER_NAME , playerName);
     }
 
     private void NetworkManager_Server_OnClientDisconnectCallback(ulong clientId)
@@ -49,13 +66,15 @@ public class GameNetworkManager : NetworkBehaviour
         }
     }
 
-    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
+    private void NetworkManager_Server_OnClientConnectedCallback(ulong clientId)
     {
         playerDataList.Add(new PlayerData
         {
             clientId = clientId,
             colorId = GetFirstUnusedColor(),
         });
+        ChangePlayerNameServerRpc(GetPlayerName());
+        ChangePlayerId(AuthenticationService.Instance.PlayerId);
     }
 
     private void NetworkManager_Client_OnClientDisconnectCallback(ulong obj)
@@ -67,7 +86,14 @@ public class GameNetworkManager : NetworkBehaviour
     {
         OnTryingToJoin?.Invoke(this, EventArgs.Empty);
         NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_Client_OnClientDisconnectCallback;
+        NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_Client_OnClientConnectedCallback;
         NetworkManager.Singleton.StartClient();
+    }
+
+    private void NetworkManager_Client_OnClientConnectedCallback(ulong obj)
+    {
+        ChangePlayerName(GetPlayerName());
+        ChangePlayerId(AuthenticationService.Instance.PlayerId);
     }
 
     private void NetworkManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
@@ -207,6 +233,40 @@ public class GameNetworkManager : NetworkBehaviour
     public PlayerData GetPlayerData()
     {
         return GetPlayerDataFromLocalId(NetworkManager.Singleton.LocalClientId);
+    }
+
+    public void ChangePlayerId(string playerId)
+    {
+        ChangePlayerIdServerRpc(playerId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangePlayerIdServerRpc(string playerId, ServerRpcParams serverRpcParams = default)
+    {
+        int playerDataIndex = GetPlayerIndexDataFromLocalId(serverRpcParams.Receive.SenderClientId);
+
+        PlayerData playerData = playerDataList[playerDataIndex];
+
+        playerData.playerId = playerId;
+
+        playerDataList[playerDataIndex] = playerData;
+    }
+
+    public void ChangePlayerName(string playerName)
+    {
+        ChangePlayerNameServerRpc(playerName);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangePlayerNameServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
+    {
+        int playerDataIndex = GetPlayerIndexDataFromLocalId(serverRpcParams.Receive.SenderClientId);
+
+        PlayerData playerData = playerDataList[playerDataIndex];
+
+        playerData.name = playerName;
+
+        playerDataList[playerDataIndex] = playerData;
     }
 
     public void ChangePlayerColor(int colorId)

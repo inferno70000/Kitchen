@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ public class CharacterSelectPlayer : MonoBehaviour
     [SerializeField] private GameObject readyText;
     [SerializeField] private Button kickButton;
     [SerializeField] private PlayerVisual playerVisual;
+    [SerializeField] private TextMeshProUGUI playerNameText;
 
     private void Start()
     {
@@ -17,7 +19,17 @@ public class CharacterSelectPlayer : MonoBehaviour
         {
             PlayerData playerData = GameNetworkManager.Instance.GetPlayerDataFromIndex(clientIndex);
 
-            GameNetworkManager.Instance.DisconnectClient(playerData.clientId);
+            LobbyManager.Instance.KickPlayer(playerData.playerId.ToString());
+
+            if (playerData.clientId != 0)
+            {
+                GameNetworkManager.Instance.DisconnectClient(playerData.clientId);
+            }
+            else
+            {
+                NetworkManager.Singleton.Shutdown();
+                Loader.Load(Loader.Scene.MenuScene);
+            }
         });
 
         kickButton.gameObject.SetActive(NetworkManager.Singleton.IsServer);
@@ -51,12 +63,14 @@ public class CharacterSelectPlayer : MonoBehaviour
             readyText.SetActive(CharacterSelectionReady.Instance.IsPlayerReady(playerData.clientId));
 
             playerVisual.SetPlayerColor(GameNetworkManager.Instance.GetColorFromColorId(playerData.colorId));
+
+            playerNameText.text = playerData.name.ToString();
         }
         else
         {
             Hide();
         }
-    } 
+    }
 
     private void Show()
     {

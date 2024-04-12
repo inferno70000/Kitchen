@@ -16,5 +16,10 @@ public class MenuCleanUp : MonoBehaviour
         {
             Destroy(GameNetworkManager.Instance.gameObject);
         }
+
+        if (LobbyManager.Instance != null)
+        {
+            Destroy(LobbyManager.Instance.gameObject);
+        }
     }
 }

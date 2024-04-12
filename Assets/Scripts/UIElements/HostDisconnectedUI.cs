@@ -30,8 +30,6 @@ public class HostDisconnectedUI : NetworkBehaviour
             Show();
         }
 
-        Debug.Log(NetworkManager.Singleton.LocalClientId);
-
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
             Show();
