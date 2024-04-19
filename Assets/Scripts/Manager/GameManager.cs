@@ -50,25 +50,20 @@ public class GameManager : NetworkBehaviour
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         state.OnValueChanged += State_OnValueChanged;
         isGamePause.OnValueChanged += IsGamePause_OnValueChanged;
-        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
-        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+        }
     }
 
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
-    {
-
-        if (sceneName == Loader.Scene.GameScene.ToString())
-        {
-            if (IsServer)
-            {
-                SpawnPlayerServerRpc();
-            }
-        }
-    }
-
-    [ServerRpc]
-    private void SpawnPlayerServerRpc()
     {
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
