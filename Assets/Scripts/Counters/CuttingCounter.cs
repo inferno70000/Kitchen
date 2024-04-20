@@ -110,15 +110,18 @@ public class CuttingCounter : BaseCounter, IHasProgressBar
     [ServerRpc(RequireOwnership = false)]
     private void InteractAltServerRpc()
     {
-        InteractAltClientRpc();
-
-        //Cutting progress is done
-        KitchenObjectSO kitchenObjectSO = GetKitchenObject().GetKitchenScriptableSO();
-        if (CuttingProgress >= GetCuttingRecipeSOFromInput(kitchenObjectSO).CuttingProgressMax)
+        if (HasKitchenObject() && HasRecipeForInput(GetKitchenObject().GetKitchenScriptableSO()))
         {
-            KitchenObject.DestroyKitchenObject(GetKitchenObject());
+            InteractAltClientRpc();
 
-            KitchenObject.Spawn(GetOuputFromInput(kitchenObjectSO), this);
+            //Cutting progress is done
+            KitchenObjectSO kitchenObjectSO = GetKitchenObject().GetKitchenScriptableSO();
+            if (CuttingProgress >= GetCuttingRecipeSOFromInput(kitchenObjectSO).CuttingProgressMax)
+            {
+                KitchenObject.DestroyKitchenObject(GetKitchenObject());
+
+                KitchenObject.Spawn(GetOuputFromInput(kitchenObjectSO), this);
+            }
         }
     }
 

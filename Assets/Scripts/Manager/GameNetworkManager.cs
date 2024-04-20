@@ -130,12 +130,19 @@ public class GameNetworkManager : NetworkBehaviour
     {
         KitchenObjectSO kitchenObjectSO = GetKitchenObjectSOFromIndex(indexKitchenObject);
         Transform kitchenTransform = Instantiate(kitchenObjectSO.prefab);
-        kitchenTransform.GetComponent<NetworkObject>().Spawn();
-
-        KitchenObject kitchenObject = kitchenTransform.GetComponent<KitchenObject>();
 
         kitchenObjectParentNetworkObjectReference.TryGet(out NetworkObject kitchenObjectParentNetworkObject);
         IKitchenObjectParent kitchenObjectParent = kitchenObjectParentNetworkObject.GetComponent<IKitchenObjectParent>();
+
+        if (kitchenObjectParent.HasKitchenObject())
+        {
+            //parent already has a object
+            return;
+        }
+
+        kitchenTransform.GetComponent<NetworkObject>().Spawn();
+
+        KitchenObject kitchenObject = kitchenTransform.GetComponent<KitchenObject>();
 
         kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
     }
@@ -173,6 +180,13 @@ public class GameNetworkManager : NetworkBehaviour
     private void DestroyKitchenObjectServerRpc(NetworkObjectReference networkObjectReference)
     {
         networkObjectReference.TryGet(out NetworkObject networkObject);
+
+        if (networkObject == null)
+        {
+            //This object is already destroyed
+            return;
+        }
+
         KitchenObject kitchenObject = networkObject.GetComponent<KitchenObject>();
 
         ClearKitchenObjectOnParentClientRpc(networkObjectReference);

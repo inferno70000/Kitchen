@@ -70,7 +70,7 @@ public class LobbyManager : MonoBehaviour
         if (UnityServices.State != ServicesInitializationState.Initialized)
         {
             InitializationOptions options = new();
-            options.SetProfile("Player" + UnityEngine.Random.Range(0, 1000));
+            //options.SetProfile("Player" + UnityEngine.Random.Range(0, 1000));
 
             await UnityServices.InitializeAsync(options);
 
