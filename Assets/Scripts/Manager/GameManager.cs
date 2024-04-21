@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GameManager : NetworkBehaviour
@@ -50,7 +51,6 @@ public class GameManager : NetworkBehaviour
         InputManager.Instance.OnInteractAction += InputManager_OnInteractAction;
         state.OnValueChanged += State_OnValueChanged;
         isGamePause.OnValueChanged += IsGamePause_OnValueChanged;
-
     }
 
     public override void OnNetworkSpawn()
@@ -111,8 +111,8 @@ public class GameManager : NetworkBehaviour
         if (state.Value == State.waitingToStart)
         {
             OnLocalPlayerReady?.Invoke(this, EventArgs.Empty);
-
             UpdatePlayersReadyServerRpc();
+
         }
     }
 

@@ -46,6 +46,8 @@ public class LobbyManager : MonoBehaviour
         float queryLobbyTime = 0f;
         float queryLobbyRepeatRate = 2f;
         InvokeRepeating(nameof(ListLobbies), queryLobbyTime, queryLobbyRepeatRate);
+
+        
     }
 
     private void HandleHeartbeatLobby()
@@ -70,7 +72,6 @@ public class LobbyManager : MonoBehaviour
         if (UnityServices.State != ServicesInitializationState.Initialized)
         {
             InitializationOptions options = new();
-            //options.SetProfile("Player" + UnityEngine.Random.Range(0, 1000));
 
             await UnityServices.InitializeAsync(options);
 

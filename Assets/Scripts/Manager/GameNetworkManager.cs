@@ -14,6 +14,8 @@ public class GameNetworkManager : NetworkBehaviour
     public event EventHandler OnTryingToJoin;
     public event EventHandler OnFailedToJoin;
 
+    public static bool IsMultiplayer;
+
     public NetworkList<PlayerData> playerDataList { get; private set; }
 
     public const int MAX_PLAYERS = 4;
@@ -34,6 +36,15 @@ public class GameNetworkManager : NetworkBehaviour
         playerDataList = new();
 
         playerName = PlayerPrefs.GetString(PLAYER_PREFS_PLAYER_NAME, "Player " + UnityEngine.Random.Range(0, 1000));
+    }
+
+    private void Start()
+    {
+        if (!IsMultiplayer)
+        {
+            StartHost();
+            Loader.LoadNetwork(Loader.Scene.GameScene);
+        }
     }
 
     public void StartHost()
